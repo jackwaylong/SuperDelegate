@@ -29,12 +29,12 @@ public protocol OpenURLCapable: ApplicationLaunched {
     /// Called when your application has been launched due to a URL.
     /// @return Whether the URL can be handled from a cold start.
     @warn_unused_result
-    func canOpenLaunchURL(launchURLToOpen: URLToOpen) -> Bool
+    func canOpen(launchURL: URLToOpen) -> Bool
     
-    /// Called when your application has been asked to open a URL. Will not be called for URLs that were delivered to the app via loadInterfaceWithLaunchItem(_:).
+    /// Called when your application has been asked to open a URL. Will not be called for URLs that were delivered to the app via loadInterface(launchItem:).
     /// @return Whether the URL was handled.
     @warn_unused_result
-    func handleURLToOpen(urlToOpen: URLToOpen) -> Bool
+    func handle(urlToOpen: URLToOpen) -> Bool
 }
 
 
@@ -87,11 +87,12 @@ extension SuperDelegate {
     // MARK: UIApplicationDelegate
     
     
+    @objc(application:openURL:options:)
     @available(iOS 9.0, *)
     @warn_unused_result
-    final public func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
+    final public func application(_ app: UIApplication, open url: URL, options: [String : AnyObject] = [:]) -> Bool {
         guard let openURLCapableSelf = self as? OpenURLCapable else {
-            noteImproperAPIUsage("Received openURL action but \(self) does not conform to OpenURLCapable. Ignoring.")
+            noteImproperAPIUsage(text: "Received openURL action but \(self) does not conform to OpenURLCapable. Ignoring.")
             return false
         }
         
@@ -105,13 +106,14 @@ extension SuperDelegate {
         let copyBeforeUse = options[UIApplicationOpenURLOptionsOpenInPlaceKey] as? Bool ?? false
         let urlToOpen = URLToOpen(url: url, sourceApplicationBundleID: sourceApplicationBundleID, annotation: annotation, copyBeforeUse: copyBeforeUse)
         
-        return openURLCapableSelf.handleURLToOpen(urlToOpen)
+        return openURLCapableSelf.handle(urlToOpen: urlToOpen)
     }
     
+    @objc(application:openURL:sourceApplication:annotation:)
     @warn_unused_result
-    final public func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+    final public func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         guard let openURLCapableSelf = self as? OpenURLCapable else {
-            noteImproperAPIUsage("Received openURL action but \(self) does not conform to OpenURLCapable. Ignoring.")
+            noteImproperAPIUsage(text: "Received openURL action but \(self) does not conform to OpenURLCapable. Ignoring.")
             return false
         }
         
@@ -122,13 +124,13 @@ extension SuperDelegate {
         
         let urlToOpen = URLToOpen(url: url, sourceApplicationBundleID: sourceApplication, annotation: annotation, copyBeforeUse: false)
         
-        return openURLCapableSelf.handleURLToOpen(urlToOpen)
+        return openURLCapableSelf.handle(urlToOpen: urlToOpen)
     }
     
+    @objc(application:handleOpenURL:)
     @warn_unused_result
-    final public func application(application: UIApplication, handleOpenURL url: NSURL) -> Bool {
-        // Nothing to do here. On iOS 8, application(_:openURL:sourceApplication:annotation:) will be called instead of this one. This method is declared to prevent subclasses from improperly adopting this API.
+    final public func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
+        // Nothing to do here. On iOS 8, application(_:open:sourceApplication:annotation:) will be called instead of this one. This method is declared to prevent subclasses from improperly adopting this API.
         return false
     }
-    
 }

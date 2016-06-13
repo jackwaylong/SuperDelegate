@@ -19,14 +19,15 @@
 //
 
 import Foundation
+import UserNotifications
 
 
 // MARK: LocalNotificationCapable – Opting into this protocol gives your app the ability to process local notifications.
 
 
 public protocol LocalNotificationCapable: UserNotificationCapable {
-    /// Called when your app receives a local notification. Will not be called for notifications that were delivered to the app via loadInterfaceWithLaunchItem(_:).
-    func didReceiveLocalNotification(localNotification: UILocalNotification, notificationOrigin: UserNotificationOrigin)
+    /// Called when your app receives a local notification. Will not be called for notifications that were delivered to the app via loadInterface(launchItem:).
+    func didReceive(localNotification: UILocalNotification, origin: UserNotificationOrigin)
 }
 
 
@@ -35,7 +36,7 @@ public protocol LocalNotificationCapable: UserNotificationCapable {
 
 public protocol LocalNotificationActionCapable: LocalNotificationCapable {
     /// Called when your app has to handle a local notification action tapped by the user. Execute completionHandler when your application has handled the action to prevent iOS from killing your app.
-    func handleLocalNotificationActionWithIdentifier(actionIdentifier: String?, forLocalNotification notification: UILocalNotification, withResponseInfo responseInfo: [String : AnyObject]?, completionHandler: () -> Void)
+    func handleLocalNotification(actionIdentifier: String?, for notification: UILocalNotification, withResponseInfo responseInfo: [String : AnyObject]?, completionHandler: () -> Void)
 }
 
 
@@ -48,9 +49,10 @@ extension SuperDelegate {
     // MARK: UIApplicationDelegate
     
     
-    final public func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+    @objc(application:didReceiveLocalNotification:)
+    final public func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
         guard let localNotificationsCapableSelf = self as? LocalNotificationCapable else {
-            noteImproperAPIUsage("Received local notification but \(self) does not conform to LocalNotificationCapable. Ignoring.")
+            noteImproperAPIUsage(text: "Received local notification but \(self) does not conform to LocalNotificationCapable. Ignoring.")
             return
         }
         
@@ -61,31 +63,33 @@ extension SuperDelegate {
         
         let notificationOrigin: UserNotificationOrigin
         if applicationIsInForeground {
-            notificationOrigin = .DeliveredWhileInForground
+            notificationOrigin = .deliveredWhileInForground
         } else {
-            notificationOrigin = .UserTappedToBringAppToForeground
+            notificationOrigin = .userTappedToBringAppToForeground
         }
         
-        localNotificationsCapableSelf.didReceiveLocalNotification(notification, notificationOrigin: notificationOrigin)
+        localNotificationsCapableSelf.didReceive(localNotification: notification, origin: notificationOrigin)
     }
     
-    final public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, completionHandler: () -> Void) {
+    @objc(application:handleActionWithIdentifier:forLocalNotification:completionHandler:)
+    final public func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, completionHandler: () -> Swift.Void) {
         guard let localNotificationActionCapableSelf = self as? LocalNotificationActionCapable else {
-            noteImproperAPIUsage("Received local notification action but \(self) does not conform to LocalNotificationActionCapable. Ignoring.")
+            noteImproperAPIUsage(text: "Received local notification action but \(self) does not conform to LocalNotificationActionCapable. Ignoring.")
             completionHandler()
             return
         }
         
-        localNotificationActionCapableSelf.handleLocalNotificationActionWithIdentifier(identifier, forLocalNotification: notification, withResponseInfo: nil, completionHandler: completionHandler)
+        localNotificationActionCapableSelf.handleLocalNotification(actionIdentifier: identifier, for: notification, withResponseInfo: nil, completionHandler: completionHandler)
     }
     
-    final public func application(application: UIApplication, handleActionWithIdentifier identifier: String?, forLocalNotification notification: UILocalNotification, withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Void) {
+    @objc(application:handleActionWithIdentifier:forLocalNotification:withResponseInfo:completionHandler:)
+    final public func application(_ application: UIApplication, handleActionWithIdentifier identifier: String?, for notification: UILocalNotification, withResponseInfo responseInfo: [NSObject : AnyObject], completionHandler: () -> Swift.Void) {
         guard let localNotificationActionCapableSelf = self as? LocalNotificationActionCapable else {
-            noteImproperAPIUsage("Received local notification action but \(self) does not conform to LocalNotificationActionCapable. Ignoring.")
+            noteImproperAPIUsage(text: "Received local notification action but \(self) does not conform to LocalNotificationActionCapable. Ignoring.")
             completionHandler()
             return
         }
         
-        localNotificationActionCapableSelf.handleLocalNotificationActionWithIdentifier(identifier, forLocalNotification: notification, withResponseInfo: responseInfo as? [String : AnyObject], completionHandler: completionHandler)
+        localNotificationActionCapableSelf.handleLocalNotification(actionIdentifier: identifier, for: notification, withResponseInfo: responseInfo as? [String : AnyObject], completionHandler: completionHandler)
     }
 }

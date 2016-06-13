@@ -120,7 +120,7 @@ class RemoteNotificationTests: XCTestCase {
         
         XCTAssertTrue(remoteNotification == RemoteNotification(remoteNotification: remoteNotificationDictionary)!)
         var differentRemoteNotificationDictionary = remoteNotificationDictionary
-        differentRemoteNotificationDictionary.removeValueForKey(categoryKey)
+        differentRemoteNotificationDictionary.removeValue(forKey: categoryKey)
         XCTAssertNotEqual(remoteNotification, RemoteNotification(remoteNotification: differentRemoteNotificationDictionary))
     }
     
@@ -128,7 +128,7 @@ class RemoteNotificationTests: XCTestCase {
         let remoteNotificationDictionary: [NSObject : AnyObject] = [
             badgeKey : badge,
             soundKey : sound,
-        ]
+            ]
         
         guard let remoteNotification = RemoteNotification(remoteNotification: remoteNotificationDictionary) else {
             XCTFail()
@@ -142,7 +142,7 @@ class RemoteNotificationTests: XCTestCase {
         XCTAssertNil(remoteNotification.alert?.wearableTitle)
         XCTAssertNil(remoteNotification.alert?.wearableTitleLocalizationKey)
         XCTAssertNil(remoteNotification.alert?.wearableTitleLocalizationArguments?.count)
-
+        
         XCTAssertEqual(badge, remoteNotification.badge)
         XCTAssertEqual(sound, remoteNotification.sound)
         XCTAssertFalse(remoteNotification.contentAvailable)
@@ -155,7 +155,7 @@ class RemoteNotificationTests: XCTestCase {
         differentRemoteNotificationDictionary[badgeKey] = badge+1
         XCTAssertNotEqual(remoteNotification, RemoteNotification(remoteNotification: differentRemoteNotificationDictionary))
     }
-
+    
 }
 
 

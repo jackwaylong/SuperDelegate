@@ -31,7 +31,7 @@ class SuperDelegateBluetoothTests: SuperDelegateTests {
     func test_applicationDidFinishLaunching_notifiesPeripheralManagerCapableDelegateOfBluetoothPeripheralsToRestore() {
         let bluetoothPeripheralCapableDelegate = BluetoothPeripheralCapableDelegate()
         let peripheralsToRestore = ["a", "b", "c"]
-        XCTAssertTrue(bluetoothPeripheralCapableDelegate.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsBluetoothPeripheralsKey : peripheralsToRestore]))
+        XCTAssertTrue(bluetoothPeripheralCapableDelegate.application(UIApplication.shared(), didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsBluetoothPeripheralsKey : peripheralsToRestore]))
         XCTAssertEqual(peripheralsToRestore, bluetoothPeripheralCapableDelegate.peripheralManagerIdentifiersToRestore)
     }
     
@@ -39,7 +39,7 @@ class SuperDelegateBluetoothTests: SuperDelegateTests {
     func test_applicationDidFinishLaunching_notifiesPeripheralManagerCapableDelegateOfBluetoothCentralsToRestore() {
         let bluetoothCentralCapableDelegate = BluetoothCentralCapableDelegate()
         let centralsToRestore = ["d", "e", "f"]
-        XCTAssertTrue(bluetoothCentralCapableDelegate.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsBluetoothCentralsKey : centralsToRestore]))
+        XCTAssertTrue(bluetoothCentralCapableDelegate.application(UIApplication.shared(), didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsBluetoothCentralsKey : centralsToRestore]))
         XCTAssertEqual(centralsToRestore, bluetoothCentralCapableDelegate.centralManagerIdentifiersToRestore)
     }
     
@@ -49,8 +49,8 @@ class SuperDelegateBluetoothTests: SuperDelegateTests {
         let peripheralsToRestore = ["a", "b", "c"]
         let centralsToRestore = ["d", "e", "f"]
         XCTAssertTrue(
-            bluetoothPeripheralAndCentralCapableDelegate.application(UIApplication.sharedApplication(),
-                didFinishLaunchingWithOptions:
+            bluetoothPeripheralAndCentralCapableDelegate.application(UIApplication.shared(),
+                                                                     didFinishLaunchingWithOptions:
                 [
                     UIApplicationLaunchOptionsBluetoothPeripheralsKey : peripheralsToRestore,
                     UIApplicationLaunchOptionsBluetoothCentralsKey : centralsToRestore
@@ -66,8 +66,8 @@ class SuperDelegateBluetoothTests: SuperDelegateTests {
         let peripheralsToRestore = ["a", "b", "c"]
         let centralsToRestore = ["d", "e", "f"]
         XCTAssertTrue(
-            bluetoothPeripheralAndCentralCapableDelegate.application(UIApplication.sharedApplication(),
-                willFinishLaunchingWithOptions:
+            bluetoothPeripheralAndCentralCapableDelegate.application(UIApplication.shared(),
+                                                                     willFinishLaunchingWithOptions:
                 [
                     UIApplicationLaunchOptionsBluetoothPeripheralsKey : peripheralsToRestore,
                     UIApplicationLaunchOptionsBluetoothCentralsKey : centralsToRestore
@@ -85,8 +85,8 @@ class SuperDelegateBluetoothTests: SuperDelegateTests {
 
 class BluetoothPeripheralCapableDelegate: AppLaunchedDelegate, BackgroundBluetoothPeripheralCapable {
     var peripheralManagerIdentifiersToRestore = [String]()
-    func restoreBluetoothPeripheralManagersWithIdentifiers(peripheralManagerIdentifiersToRestore: [String]) {
-        self.peripheralManagerIdentifiersToRestore = peripheralManagerIdentifiersToRestore
+    func restoreBluetoothPeripheralManagers(identifiersToRestore: [String]) {
+        self.peripheralManagerIdentifiersToRestore = identifiersToRestore
     }
 }
 
@@ -96,8 +96,8 @@ class BluetoothPeripheralCapableDelegate: AppLaunchedDelegate, BackgroundBluetoo
 
 class BluetoothCentralCapableDelegate: AppLaunchedDelegate, BackgroundBluetoothCentralCapable {
     var centralManagerIdentifiersToRestore = [String]()
-    func restoreBluetoothCentralManagersWithIdentifiers(centralManagerIdentifiersToRestore: [String]) {
-        self.centralManagerIdentifiersToRestore = centralManagerIdentifiersToRestore
+    func restoreBluetoothCentralManagers(identifiersToRestore: [String]) {
+        self.centralManagerIdentifiersToRestore = identifiersToRestore
     }
 }
 
@@ -108,12 +108,12 @@ class BluetoothCentralCapableDelegate: AppLaunchedDelegate, BackgroundBluetoothC
 class BluetoothPeripheralAndCentralCapableDelegate: AppLaunchedDelegate, BackgroundBluetoothPeripheralCapable, BackgroundBluetoothCentralCapable {
     
     var peripheralManagerIdentifiersToRestore = [String]()
-    func restoreBluetoothPeripheralManagersWithIdentifiers(peripheralManagerIdentifiersToRestore: [String]) {
-        self.peripheralManagerIdentifiersToRestore = peripheralManagerIdentifiersToRestore
+    func restoreBluetoothPeripheralManagers(identifiersToRestore: [String]) {
+        self.peripheralManagerIdentifiersToRestore = identifiersToRestore
     }
     
     var centralManagerIdentifiersToRestore = [String]()
-    func restoreBluetoothCentralManagersWithIdentifiers(centralManagerIdentifiersToRestore: [String]) {
-        self.centralManagerIdentifiersToRestore = centralManagerIdentifiersToRestore
+    func restoreBluetoothCentralManagers(identifiersToRestore: [String]) {
+        self.centralManagerIdentifiersToRestore = identifiersToRestore
     }
 }
