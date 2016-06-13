@@ -30,7 +30,7 @@ public protocol UserNotificationCapable: ApplicationLaunched {
     func requestedUserNotificationSettings() -> UIUserNotificationSettings
     
     /// Called every time user notifications are registered. Will happen every time the application is brought to the foreground after requestUserNotificationPermissions is called.
-    func didReceiveUserNotificationPermissions(userNotificationPermissionsGranted: UserNotificationPermissionsGranted)
+    func didReceive(userNotificationPermissions: UserNotificationPermissionsGranted)
 }
 
 
@@ -39,19 +39,19 @@ public protocol UserNotificationCapable: ApplicationLaunched {
 
 public enum UserNotificationPermissionsGranted: Equatable {
     /// None of the permissions detailed in requestedUserNotificationSettings().types are granted.
-    case None
+    case none
     /// Some of the permissions detailed in requestedUserNotificationSettings().types are granted.
-    case Some(grantedPermissions: UIUserNotificationType)
+    case some(grantedPermissions: UIUserNotificationType)
     /// All of the permissions detailed in requestedUserNotificationSettings().types are granted.
-    case Requested
+    case requested
     
     internal init(grantedPermissions: UIUserNotificationType, preferredPermissions: UIUserNotificationType) {
         if grantedPermissions.rawValue & preferredPermissions.rawValue == preferredPermissions.rawValue {
-            self = .Requested
-        } else if grantedPermissions.rawValue & preferredPermissions.rawValue != UIUserNotificationType.None.rawValue {
-            self = .Some(grantedPermissions: grantedPermissions)
+            self = .requested
+        } else if grantedPermissions != [] {
+            self = .some(grantedPermissions: grantedPermissions)
         } else {
-            self = .None
+            self = .none
         }
     }
 }
@@ -63,11 +63,11 @@ public enum UserNotificationPermissionsGranted: Equatable {
 @warn_unused_result
 public func ==(lhs: UserNotificationPermissionsGranted, rhs: UserNotificationPermissionsGranted) -> Bool {
     switch (lhs, rhs) {
-    case (.Requested, .Requested):
+    case (.requested, .requested):
         return true
-    case let (.Some(lhsGrantedPermissions), .Some(rhsGrantedPermissions)) where lhsGrantedPermissions == rhsGrantedPermissions:
+    case let (.some(lhsGrantedPermissions), .some(rhsGrantedPermissions)) where lhsGrantedPermissions == rhsGrantedPermissions:
         return true
-    case (.None, .None):
+    case (.none, .none):
         return true
     default:
         return false
@@ -77,11 +77,11 @@ public func ==(lhs: UserNotificationPermissionsGranted, rhs: UserNotificationPer
 
 public enum UserNotificationOrigin {
     /// The user tapped the notification to bring the app to the foreground
-    case UserTappedToBringAppToForeground
+    case userTappedToBringAppToForeground
     /// The user has not seen the notification since it was delivered while the app was in the foreground
-    case DeliveredWhileInForground
+    case deliveredWhileInForground
     /// The user may have seen the notification, but hasn't tapped on it. RemoteNotification
-    case DeliveredWhileInBackground
+    case deliveredWhileInBackground
 }
 
 
@@ -94,17 +94,17 @@ extension SuperDelegate {
     // MARK: Public Methods
     
     
-    /// Requests the user notification permissions defined by requestedUserNotificationSettings(). Call this when the user should be prompted for user notification permissions. The first time (per installation and requestedUserNotificationSettings().types configuration) that this method is called the user will be prompted for user notification permissions. Subsequent attempts will not prompt users, but will result in didReceiveUserNotificationPermissions(_:) being called.
+    /// Requests the user notification permissions defined by requestedUserNotificationSettings(). Call this when the user should be prompted for user notification permissions. The first time (per installation and requestedUserNotificationSettings().types configuration) that this method is called the user will be prompted for user notification permissions. Subsequent attempts will not prompt users, but will result in didReceive(userNotificationPermissions:) being called.
     final public func requestUserNotificationPermissions() {
         guard let userNotificationsCapableSelf = self as? UserNotificationCapable else {
-            noteImproperAPIUsage("Attempting to requestUserNotificationPermissions when app \(self) subclass does not conform to UserNotificationCapable protocol.")
+            noteImproperAPIUsage(text: "Attempting to requestUserNotificationPermissions when app \(self) subclass does not conform to UserNotificationCapable protocol.")
             return
         }
         
         // Note that we have registered for user notifications. Every time the the app comes to the foreground in the future (with the same requestedUserNotificationSettings()) we'll register on the application's behalf. Registering on every applicationDidEnterForeground allows the app to always know the device's current notification settings.
         previouslyRequestedUserNotificationPermissions = true
         
-        UIApplication.sharedApplication().registerUserNotificationSettings(userNotificationsCapableSelf.requestedUserNotificationSettings())
+        UIApplication.shared().registerUserNotificationSettings(userNotificationsCapableSelf.requestedUserNotificationSettings())
     }
     
     
@@ -117,20 +117,20 @@ extension SuperDelegate {
     public internal(set) var previouslyRequestedUserNotificationPermissions: Bool {
         get {
             guard let userNotificationsCapableSelf = self as? UserNotificationCapable else {
-                noteImproperAPIUsage("Attempting to query previouslyRequestedUserNotificationPermissions when app \(self) subclass does not conform to UserNotificationCapable protocol.")
+                noteImproperAPIUsage(text: "Attempting to query previouslyRequestedUserNotificationPermissions when app \(self) subclass does not conform to UserNotificationCapable protocol.")
                 return false
             }
             
-            return NSUserDefaults.standardUserDefaults().boolForKey("\(SuperDelegate.PreviouslyRequestedUserNotificationPermissionsPreferencesKey).\(userNotificationsCapableSelf.requestedUserNotificationSettings().types)")
+            return UserDefaults.standard().bool(forKey: "\(SuperDelegate.PreviouslyRequestedUserNotificationPermissionsPreferencesKey).\(userNotificationsCapableSelf.requestedUserNotificationSettings().types)")
         }
         
         set {
             guard let userNotificationsCapableSelf = self as? UserNotificationCapable else {
-                noteImproperAPIUsage("Attempting to set previouslyRequestedUserNotificationPermissions when app \(self) subclass does not conform to UserNotificationCapable protocol.")
+                noteImproperAPIUsage(text: "Attempting to set previouslyRequestedUserNotificationPermissions when app \(self) subclass does not conform to UserNotificationCapable protocol.")
                 return
             }
             
-            NSUserDefaults.standardUserDefaults().setBool(newValue, forKey: "\(SuperDelegate.PreviouslyRequestedUserNotificationPermissionsPreferencesKey).\(userNotificationsCapableSelf.requestedUserNotificationSettings().types)")
+            UserDefaults.standard().set(newValue, forKey: "\(SuperDelegate.PreviouslyRequestedUserNotificationPermissionsPreferencesKey).\(userNotificationsCapableSelf.requestedUserNotificationSettings().types)")
         }
     }
     
@@ -138,19 +138,20 @@ extension SuperDelegate {
     // MARK: UIApplicationDelegate
     
     
-    final public func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+    @objc(application:didRegisterUserNotificationSettings:)
+    final public func application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
         guard let userNotificationsCapableSelf = self as? UserNotificationCapable else {
-            noteImproperAPIUsage("Received didRegisterUserNotificationSettings but \(self) does not conform to UserNotificationCapable.")
+            noteImproperAPIUsage(text: "Received didRegisterUserNotificationSettings but \(self) does not conform to UserNotificationCapable.")
             return
         }
         
         if let currentUserNotificationSettings = application.currentUserNotificationSettings() {
             // Some versions of iOS give us an incomplete notificationSettings options. Therefore, union the options with currentUserNotificationSettings to work around possible bugs in the operating system.
             let grantedPermissions = currentUserNotificationSettings.types.union(notificationSettings.types)
-            userNotificationsCapableSelf.didReceiveUserNotificationPermissions(UserNotificationPermissionsGranted(grantedPermissions: grantedPermissions, preferredPermissions: userNotificationsCapableSelf.requestedUserNotificationSettings().types))
+            userNotificationsCapableSelf.didReceive(userNotificationPermissions: UserNotificationPermissionsGranted(grantedPermissions: grantedPermissions, preferredPermissions: userNotificationsCapableSelf.requestedUserNotificationSettings().types))
             
         } else {
-            userNotificationsCapableSelf.didReceiveUserNotificationPermissions(UserNotificationPermissionsGranted(grantedPermissions: notificationSettings.types, preferredPermissions: userNotificationsCapableSelf.requestedUserNotificationSettings().types))
+            userNotificationsCapableSelf.didReceive(userNotificationPermissions: UserNotificationPermissionsGranted(grantedPermissions: notificationSettings.types, preferredPermissions: userNotificationsCapableSelf.requestedUserNotificationSettings().types))
         }
     }
 }

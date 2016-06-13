@@ -50,11 +50,11 @@ public struct RemoteNotification: CustomStringConvertible, Equatable {
         remoteNotificationDictionary = remoteNotification
         
         var customFields = remoteNotification
-        customFields.removeValueForKey(alertKey)
-        customFields.removeValueForKey(badgeKey)
-        customFields.removeValueForKey(soundKey)
-        customFields.removeValueForKey(contentAvailableKey)
-        customFields.removeValueForKey(categoryKey)
+        customFields.removeValue(forKey: alertKey)
+        customFields.removeValue(forKey: badgeKey)
+        customFields.removeValue(forKey: soundKey)
+        customFields.removeValue(forKey: contentAvailableKey)
+        customFields.removeValue(forKey: categoryKey)
         
         userInfo = customFields
     }
@@ -140,7 +140,7 @@ public func ==(lhs: RemoteNotification, rhs: RemoteNotification) -> Bool {
             return false
         }
     }
-
+    
     guard NSDictionary(dictionary: lhs.userInfo) == NSDictionary(dictionary: rhs.userInfo) else {
         return false
     }
@@ -167,7 +167,7 @@ public func ==(lhs: RemoteNotification.Alert, rhs: RemoteNotification.Alert) -> 
             return false
         }
     }
-
+    
     if lhs.actionLocalizationKey != nil || rhs.actionLocalizationKey != nil {
         guard let lhsActionLocalizationKey = lhs.actionLocalizationKey, let rhsActionLocalizationKey = rhs.actionLocalizationKey where lhsActionLocalizationKey == rhsActionLocalizationKey else {
             return false

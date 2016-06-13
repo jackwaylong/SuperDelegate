@@ -22,26 +22,26 @@ import Foundation
 
 
 public enum LaunchItem: CustomStringConvertible, Equatable {
-    case RemoteNotificationItem(remoteNotification: RemoteNotification)
-    case LocalNotificationItem(localNotification: UILocalNotification)
-    case OpenURLItem(urlToOpen: URLToOpen)
+    case remoteNotification(item: RemoteNotification)
+    case localNotification(item: UILocalNotification)
+    case openURL(item: URLToOpen)
     @available(iOS 9.0, *)
-    case ShortcutItem(shortcutItem: UIApplicationShortcutItem)
-    case UserActivityItem(userActivity: NSUserActivity)
-    case NoItem
+    case shortcut(item: UIApplicationShortcutItem)
+    case userActivity(item: NSUserActivity)
+    case none
     
     // MARK: Initialization
     
     init(launchOptions: [NSObject : AnyObject]?) {
         if let launchRemoteNotification = RemoteNotification(remoteNotification: launchOptions?[UIApplicationLaunchOptionsRemoteNotificationKey] as? [NSObject : AnyObject]) {
-            self = .RemoteNotificationItem(remoteNotification: launchRemoteNotification)
+            self = .remoteNotification(item: launchRemoteNotification)
         } else if let launchLocalNotification = launchOptions?[UIApplicationLaunchOptionsLocalNotificationKey] as? UILocalNotification {
-            self = .LocalNotificationItem(localNotification: launchLocalNotification)
+            self = .localNotification(item: launchLocalNotification)
         } else if let launchURL = launchOptions?[UIApplicationLaunchOptionsURLKey] as? NSURL {
             let sourceApplicationBundleID = launchOptions?[UIApplicationLaunchOptionsSourceApplicationKey] as? String
             let annotation = launchOptions?[UIApplicationLaunchOptionsAnnotationKey]
             if #available(iOS 9.0, *) {
-                self = OpenURLItem(urlToOpen: URLToOpen(
+                self = openURL(item: URLToOpen(
                     url: launchURL,
                     sourceApplicationBundleID: sourceApplicationBundleID,
                     annotation: annotation,
@@ -49,7 +49,7 @@ public enum LaunchItem: CustomStringConvertible, Equatable {
                     )
                 )
             } else {
-                self = OpenURLItem(urlToOpen: URLToOpen(
+                self = openURL(item: URLToOpen(
                     url: launchURL,
                     sourceApplicationBundleID: sourceApplicationBundleID,
                     annotation: annotation,
@@ -58,12 +58,12 @@ public enum LaunchItem: CustomStringConvertible, Equatable {
                 )
             }
         } else if #available(iOS 9.0, *), let launchShortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
-            self = .ShortcutItem(shortcutItem: launchShortcutItem)
+            self = .shortcut(item: launchShortcutItem)
         } else if let launchUserActivity = (launchOptions?[UIApplicationLaunchOptionsUserActivityDictionaryKey] as? [String : AnyObject])?[ApplicationLaunchOptionsUserActivityKey] as? NSUserActivity {
             // Unfortunately, "UIApplicationLaunchOptionsUserActivityKey" has no constant, but it is there.
-            self = .UserActivityItem(userActivity: launchUserActivity)
+            self = .userActivity(item: launchUserActivity)
         } else {
-            self = .NoItem
+            self = .none
         }
     }
     
@@ -72,18 +72,18 @@ public enum LaunchItem: CustomStringConvertible, Equatable {
     public var description: String {
         // Creating a custom string for LaunchItem to prevent a crash when printing any enum values with associated items on iOS 8. Swift accesses the class of every possible associated object when printing an enum instance with an asssociated value, no matter which case the instance represents. This causes a crash on iOS 8 since swift attempts to access UIApplicationShortcutItem, which doesn't exist on iOS 8. Filed rdar://26699861 – hoping for a fix in Swift 3.
         switch self {
-        case let .RemoteNotificationItem(remoteNotification):
-            return "LaunchItem.RemoteNotificationItem: \(remoteNotification)"
-        case let .LocalNotificationItem(localNotification):
-            return "LaunchItem.LocalNotificationItem: \(localNotification)"
-        case let .OpenURLItem(urlToOpen):
-            return "LaunchItem.OpenURLItem: \(urlToOpen)"
-        case let .ShortcutItem(shortcutItem):
-            return "LaunchItem.ShortcutItem: \(shortcutItem)"
-        case let .UserActivityItem(userActivity):
-            return "LaunchItem.UserActivityItem: \(userActivity)"
-        case .NoItem:
-            return "LaunchItem.NoItem"
+        case let .remoteNotification(item):
+            return "LaunchItem.remoteNotification: \(item)"
+        case let .localNotification(item):
+            return "LaunchItem.localNotification: \(item)"
+        case let .openURL(item):
+            return "LaunchItem.openURL: \(item)"
+        case let .shortcut(item):
+            return "LaunchItem.shortcut: \(item)"
+        case let .userActivity(item):
+            return "LaunchItem.userActivity: \(item)"
+        case .none:
+            return "LaunchItem.none"
         }
     }
     
@@ -93,54 +93,54 @@ public enum LaunchItem: CustomStringConvertible, Equatable {
     public var launchOptions: [NSObject : AnyObject] {
         get {
             switch self {
-            case let .RemoteNotificationItem(remoteNotification):
+            case let .remoteNotification(item):
                 return [
-                    UIApplicationLaunchOptionsRemoteNotificationKey  : remoteNotification.remoteNotificationDictionary
+                    UIApplicationLaunchOptionsRemoteNotificationKey  : item.remoteNotificationDictionary
                 ]
                 
-            case let .LocalNotificationItem(localNotification):
+            case let .localNotification(item):
                 return [
-                    UIApplicationLaunchOptionsLocalNotificationKey : localNotification
+                    UIApplicationLaunchOptionsLocalNotificationKey : item
                 ]
                 
-            case let OpenURLItem(urlToOpen):
+            case let openURL(item):
                 var launchOptions: [NSObject : AnyObject] = [
-                    UIApplicationLaunchOptionsURLKey : urlToOpen.url
+                    UIApplicationLaunchOptionsURLKey : item.url
                 ]
                 
-                if let sourceApplicationBundleID = urlToOpen.sourceApplicationBundleID {
+                if let sourceApplicationBundleID = item.sourceApplicationBundleID {
                     launchOptions[UIApplicationLaunchOptionsSourceApplicationKey] = sourceApplicationBundleID
                 }
                 
-                if let annotation = urlToOpen.annotation {
+                if let annotation = item.annotation {
                     launchOptions[UIApplicationLaunchOptionsAnnotationKey] = annotation
                 }
                 
                 if #available(iOS 9.0, *) {
-                    launchOptions[UIApplicationOpenURLOptionsOpenInPlaceKey] = urlToOpen.copyBeforeUse
+                    launchOptions[UIApplicationOpenURLOptionsOpenInPlaceKey] = item.copyBeforeUse
                 }
                 
                 return launchOptions
                 
-            case let ShortcutItem(shortcutItem):
+            case let .shortcut(item):
                 if #available(iOS 9.0, *) {
                     return [
-                        UIApplicationLaunchOptionsShortcutItemKey : shortcutItem
+                        UIApplicationLaunchOptionsShortcutItemKey : item
                     ]
                 } else {
-                    // If we are a .ShortcutItem and we are not on iOS 9 or later, something absolutely terrible has happened.
+                    // If we are a .shortcut and we are not on iOS 9 or later, something absolutely terrible has happened.
                     fatalError()
                 }
                 
-            case let UserActivityItem(userActivity):
+            case let userActivity(item):
                 return [
                     UIApplicationLaunchOptionsUserActivityDictionaryKey : [
-                        UIApplicationLaunchOptionsUserActivityTypeKey : userActivity.activityType,
-                        ApplicationLaunchOptionsUserActivityKey : userActivity
+                        UIApplicationLaunchOptionsUserActivityTypeKey : item.activityType,
+                        ApplicationLaunchOptionsUserActivityKey : item
                     ]
                 ]
                 
-            case NoItem:
+            case none:
                 return [:]
             }
         }
@@ -154,17 +154,17 @@ public enum LaunchItem: CustomStringConvertible, Equatable {
 @warn_unused_result
 public func ==(lhs: LaunchItem, rhs: LaunchItem) -> Bool {
     switch (lhs, rhs) {
-    case let (.RemoteNotificationItem(remoteNotifLHS), .RemoteNotificationItem(remoteNotifRHS)) where remoteNotifLHS == remoteNotifRHS:
+    case let (.remoteNotification(itemLHS), .remoteNotification(itemRHS)) where itemLHS == itemRHS:
         return true
-    case let (.LocalNotificationItem(localNotifLHS), .LocalNotificationItem(localNotifRHS)) where localNotifLHS == localNotifRHS:
+    case let (.localNotification(itemLHS), .localNotification(itemRHS)) where itemLHS == itemRHS:
         return true
-    case let (.OpenURLItem(urlLHS), .OpenURLItem(urlRHS)) where urlLHS == urlRHS:
+    case let (.openURL(itemLHS), .openURL(itemRHS)) where itemLHS == itemRHS:
         return true
-    case let (.ShortcutItem(shortcutItemLHS), .ShortcutItem(shortcutItemRHS)) where shortcutItemLHS == shortcutItemRHS:
+    case let (.shortcut(itemLHS), .shortcut(itemRHS)) where itemLHS == itemRHS:
         return true
-    case let (.UserActivityItem(userActivityTypeLHS), .UserActivityItem(userActivityTypeRHS)) where userActivityTypeLHS == userActivityTypeRHS:
+    case let (.userActivity(itemLHS), .userActivity(itemRHS)) where itemLHS == itemRHS:
         return true
-    case (.NoItem, .NoItem):
+    case (.none, .none):
         return true
     default:
         return false

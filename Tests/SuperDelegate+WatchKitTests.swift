@@ -30,7 +30,7 @@ class SuperDelegateWatchKitTests: SuperDelegateTests {
     
     func test_handleWatchkitExtensionRequest_setsUpApplicationPriorToHandlingTheExtension() {
         let watchKitCapableDelegate = WatchKitCapableDelegate()
-        watchKitCapableDelegate.application(UIApplication.sharedApplication(), handleWatchKitExtensionRequest: nil) { (_) in
+        watchKitCapableDelegate.application(UIApplication.shared(), handleWatchKitExtensionRequest: nil) { (_) in
             // Nothing to do here.
         }
         XCTAssertTrue(watchKitCapableDelegate.hasHandledWatchKitExtensionRequest)

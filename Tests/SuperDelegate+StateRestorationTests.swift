@@ -30,17 +30,17 @@ class SuperDelegateStateRestorationTests: SuperDelegateTests {
     
     func test_applicationWillFinishLaunching_loadsInterface() {
         let stateRestorationCapableDelegate = StateRestorationCapableDelegate()
-        XCTAssertTrue(stateRestorationCapableDelegate.application(UIApplication.sharedApplication(), willFinishLaunchingWithOptions: nil))
+        XCTAssertTrue(stateRestorationCapableDelegate.application(UIApplication.shared(), willFinishLaunchingWithOptions: nil))
         XCTAssertTrue(stateRestorationCapableDelegate.interfaceLoaded)
         
         switch stateRestorationCapableDelegate.launchItem {
-        case .NoItem:
+        case .none:
             break
         default:
             XCTFail()
         }
         
-        XCTAssertTrue(stateRestorationCapableDelegate.application(UIApplication.sharedApplication(), didFinishLaunchingWithOptions: nil))
+        XCTAssertTrue(stateRestorationCapableDelegate.application(UIApplication.shared(), didFinishLaunchingWithOptions: nil))
     }
 }
 
@@ -60,11 +60,11 @@ class StateRestorationCapableDelegate: AppLaunchedDelegate, StateRestorationCapa
         return true
     }
     
-    func willEncodeRestorableStateWithCoder(coder: NSCoder) {
+    func willEncodeRestorableState(coder: NSCoder) {
         // Nothing to test here. This method is just a passthrough.
     }
     
-    func didDecodeRestorableStateWithCoder(coder: NSCoder) {
+    func didDecodeRestorableState(coder: NSCoder) {
         // Nothing to test here. This method is just a passthrough.
     }
     
