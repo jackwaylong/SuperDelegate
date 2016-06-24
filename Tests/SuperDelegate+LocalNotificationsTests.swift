@@ -67,7 +67,7 @@ class SuperDelegateLocalNotificationTests: SuperDelegateTests {
         localNotificationCapableDelegate.application(UIApplication.shared(), didReceive: localNotification)
         
         XCTAssertEqual(localNotification, localNotificationCapableDelegate.receivedLocalNotification)
-        XCTAssertEqual(localNotificationCapableDelegate.receivedNotificationOrigin, UserNotificationOrigin.deliveredWhileInForground)
+        XCTAssertEqual(localNotificationCapableDelegate.receivedNotificationOrigin, UserNotificationOrigin.deliveredWhileInForeground)
     }
     
     func test_didReceive_dropsRemoteNotificationDeliveredToLoadInterfaceWithLaunchItem() {

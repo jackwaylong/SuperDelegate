@@ -79,7 +79,7 @@ public enum UserNotificationOrigin {
     /// The user tapped the notification to bring the app to the foreground
     case userTappedToBringAppToForeground
     /// The user has not seen the notification since it was delivered while the app was in the foreground
-    case deliveredWhileInForground
+    case deliveredWhileInForeground
     /// The user may have seen the notification, but hasn't tapped on it. RemoteNotification
     case deliveredWhileInBackground
 }

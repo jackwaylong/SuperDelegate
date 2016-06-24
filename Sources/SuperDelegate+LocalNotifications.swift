@@ -63,7 +63,7 @@ extension SuperDelegate {
         
         let notificationOrigin: UserNotificationOrigin
         if applicationIsInForeground {
-            notificationOrigin = .deliveredWhileInForground
+            notificationOrigin = .deliveredWhileInForeground
         } else {
             notificationOrigin = .userTappedToBringAppToForeground
         }

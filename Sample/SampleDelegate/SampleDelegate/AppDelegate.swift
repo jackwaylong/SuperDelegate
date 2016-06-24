@@ -87,7 +87,7 @@ extension AppDelegate: RemoteNotificationCapable {
             // The customer tapped on the notification. Show UI about the notification.
             break
             
-        case .deliveredWhileInForground:
+        case .deliveredWhileInForeground:
             // The customer has not seen this notification. Alert the customer somehow.
             break
             

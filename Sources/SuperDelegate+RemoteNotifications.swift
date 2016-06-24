@@ -93,7 +93,7 @@ public extension SuperDelegate {
         
         let notificationOrigin: UserNotificationOrigin
         if applicationIsInForeground {
-            notificationOrigin = .deliveredWhileInForground
+            notificationOrigin = .deliveredWhileInForeground
         } else if application.applicationState == .background && remoteNotification.contentAvailable {
             notificationOrigin = .deliveredWhileInBackground
         } else {

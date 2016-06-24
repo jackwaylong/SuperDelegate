@@ -129,7 +129,7 @@ class SuperDelegateRemoteNotificationTests: SuperDelegateTests {
         XCTAssertTrue(fetchCompletionHandlerExecuted)
         
         XCTAssertEqual(remoteNotificationCapableDelegate.receivedRemoteNotification, remoteNotification)
-        XCTAssertEqual(remoteNotificationCapableDelegate.receivedNotificationOrigin, UserNotificationOrigin.deliveredWhileInForground)
+        XCTAssertEqual(remoteNotificationCapableDelegate.receivedNotificationOrigin, UserNotificationOrigin.deliveredWhileInForeground)
     }
     
     func test_didReceiveRemoteNotification_dropsRemoteNotificationDeliveredToLoadInterfaceWithLaunchItem() {
