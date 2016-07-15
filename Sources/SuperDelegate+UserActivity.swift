@@ -27,12 +27,10 @@ import Foundation
 public protocol UserActivityCapable: ApplicationLaunched {
     /// Called whenever your application must handle a user activity.
     /// @return Whether you can handle the user activity. Returning false means the below methods will not be called.
-    @warn_unused_result
     func canResume(userActivity: NSUserActivity) -> Bool
     
     /// Called whenever your application must continue a user activity after the interface has been loaded.
     /// @return true if your app handled the user activity, false if it did not.
-    @warn_unused_result
     func resume(userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool
 }
 
@@ -47,7 +45,6 @@ extension SuperDelegate {
     
     
     @objc(application:continueUserActivity:restorationHandler:)
-    @warn_unused_result
     final public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: ([AnyObject]?) -> Void) -> Bool {
         guard let userActivityCapableSelf = self as? UserActivityCapable else {
             noteImproperAPIUsage(text: "Received continueUserActivity but \(self) does not conform to UserActivityCapable. Not handling user activity event.")

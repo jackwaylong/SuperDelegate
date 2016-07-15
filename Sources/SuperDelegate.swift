@@ -66,7 +66,7 @@ public class SuperDelegate: NSObject, UIApplicationDelegate {
     private var handledShortcutInWillFinishLaunching = false
     private var couldHandleURLInWillFinishLaunching = true
     private var couldHandleUserActivityInWillFinishLaunching = true
-    @warn_unused_result
+    
     final public func application(_ application: UIApplication, willFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         guard self is ApplicationLaunched else {
             noteImproperAPIUsage(text: "\(self) must conform to ApplicationLaunched protocol")
@@ -77,10 +77,10 @@ public class SuperDelegate: NSObject, UIApplicationDelegate {
         requestUserNotificationPermissionsIfPreviouslyRegistered()
         
         // Use notification listeners to respond to application lifecycle events to subclasses can override the default hooks.
-        applicationDidBecomeActiveListener = NotificationCenter.default().addObserver(forName: NSNotification.Name.UIApplicationDidBecomeActive, object: application, queue: OperationQueue.main()) { [weak self] _ in
+        applicationDidBecomeActiveListener = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIApplicationDidBecomeActive, object: application, queue: OperationQueue.main) { [weak self] _ in
             self?.applicationIsInForeground = true
         }
-        applicationDidEnterBackgroundListener = NotificationCenter.default().addObserver(forName: NSNotification.Name.UIApplicationDidEnterBackground, object: application, queue: OperationQueue.main()) { [weak self] _ in
+        applicationDidEnterBackgroundListener = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIApplicationDidEnterBackground, object: application, queue: OperationQueue.main) { [weak self] _ in
             self?.applicationIsInForeground = false
         }
         
@@ -146,7 +146,6 @@ public class SuperDelegate: NSObject, UIApplicationDelegate {
             && !handledShortcutInWillFinishLaunching
     }
     
-    @warn_unused_result
     final public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
         guard self is ApplicationLaunched else {
             noteImproperAPIUsage(text: "\(self) must conform to ApplicationLaunched protocol")
@@ -226,7 +225,7 @@ public class SuperDelegate: NSObject, UIApplicationDelegate {
         loadInterfaceOnce(with: launchItem)
         
         // Now that we've loaded the interface with our launch item, set up our willEnterForegroundListener
-        applicationWillEnterForegroundListener = NotificationCenter.default().addObserver(forName: NSNotification.Name.UIApplicationWillEnterForeground, object: application, queue: OperationQueue.main()) { [weak self] _ in
+        applicationWillEnterForegroundListener = NotificationCenter.default.addObserver(forName: NSNotification.Name.UIApplicationWillEnterForeground, object: application, queue: OperationQueue.main) { [weak self] _ in
             guard let weakSelf = self else {
                 return
             }
@@ -340,13 +339,13 @@ public class SuperDelegate: NSObject, UIApplicationDelegate {
         }
         
         if let applicationDidBecomeActiveListener = applicationDidBecomeActiveListener {
-            NotificationCenter.default().removeObserver(applicationDidBecomeActiveListener)
+            NotificationCenter.default.removeObserver(applicationDidBecomeActiveListener)
         }
         if let applicationWillEnterForegroundListener = applicationWillEnterForegroundListener {
-            NotificationCenter.default().removeObserver(applicationWillEnterForegroundListener)
+            NotificationCenter.default.removeObserver(applicationWillEnterForegroundListener)
         }
         if let applicationDidEnterBackgroundListener = applicationDidEnterBackgroundListener {
-            NotificationCenter.default().removeObserver(applicationDidEnterBackgroundListener)
+            NotificationCenter.default.removeObserver(applicationDidEnterBackgroundListener)
         }
     }
 }

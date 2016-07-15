@@ -27,7 +27,6 @@ import Foundation
 public protocol HandoffCapable: UserActivityCapable {
     /// Called whenever your application takes responsibility for notifying users when a continuation activity takes longer than expected. Use this method to provide immediate feedback to the user that an activity is about to continue on this device. The app calls this method as soon as the user confirms that an activity should be continued but possibly before the data associated with that activity is available.
     /// @return true if you want to notify the user that a continuation is in progress or false if you want iOS to notify the user.
-    @warn_unused_result
     func willContinue(userActivityType: String) -> Bool
     
     /// Called whenever a user activity item managed by UIKit has been updated.
@@ -47,7 +46,6 @@ extension SuperDelegate {
     // MARK: UIApplicationDelegate
     
     
-    @warn_unused_result
     final public func application(_ application: UIApplication, willContinueUserActivityWithType userActivityType: String) -> Bool {
         guard let userActivityCapableSelf = self as? HandoffCapable else {
             noteImproperAPIUsage(text: "Received willContinueUserActivityWithType but \(self) does not conform to HandoffCapable. Not handling handoff event.")

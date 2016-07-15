@@ -227,7 +227,7 @@ class SuperDelegateRemoteNotificationTests: SuperDelegateTests {
         
         XCTAssertNil(remoteNotificationCapableDelegate.receivedRemoteNotification)
         
-        NotificationCenter.default().post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
+        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
         
         remoteNotificationCapableDelegate.application(UIApplication.shared(), didReceiveRemoteNotification: remoteNotificationDictionary, fetchCompletionHandler: { (_) in
             // Nothing to do here.

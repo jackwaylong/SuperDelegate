@@ -151,7 +151,6 @@ public enum LaunchItem: CustomStringConvertible, Equatable {
 // MARK: Equatable
 
 
-@warn_unused_result
 public func ==(lhs: LaunchItem, rhs: LaunchItem) -> Bool {
     switch (lhs, rhs) {
     case let (.remoteNotification(itemLHS), .remoteNotification(itemRHS)) where itemLHS == itemRHS:

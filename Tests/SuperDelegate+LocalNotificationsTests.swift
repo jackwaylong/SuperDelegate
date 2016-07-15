@@ -105,7 +105,7 @@ class SuperDelegateLocalNotificationTests: SuperDelegateTests {
         
         XCTAssertNil(localNotificationCapableDelegate.receivedLocalNotification)
         
-        NotificationCenter.default().post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
+        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
         
         localNotificationCapableDelegate.application(UIApplication.shared(), didReceive: localNotification)
         

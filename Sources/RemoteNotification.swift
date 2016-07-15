@@ -119,7 +119,6 @@ public struct RemoteNotification: CustomStringConvertible, Equatable {
 
 // MARK: Equatable
 
-@warn_unused_result
 public func ==(lhs: RemoteNotification, rhs: RemoteNotification) -> Bool {
     if lhs.alert != nil || rhs.alert != nil {
         guard let lhsAlert = lhs.alert, let rhsAlert = rhs.alert where lhsAlert == rhsAlert else {
@@ -156,7 +155,6 @@ public func ==(lhs: RemoteNotification, rhs: RemoteNotification) -> Bool {
     return true
 }
 
-@warn_unused_result
 public func ==(lhs: RemoteNotification.Alert, rhs: RemoteNotification.Alert) -> Bool {
     if lhs.body != nil || rhs.body != nil {
         guard let lhsBody = lhs.body, let rhsBody = rhs.body where lhsBody == rhsBody else {

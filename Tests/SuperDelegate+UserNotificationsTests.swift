@@ -34,7 +34,7 @@ class SuperDelegateUserNotificationTests: SuperDelegateTests {
         XCTAssertTrue(userNotificationsCapableDelegate.application(UIApplication.shared(), didFinishLaunchingWithOptions: nil))
         XCTAssertEqual(userNotificationsCapableDelegate.requestedUserNotificationSettingsCallCount, 1)
         
-        NotificationCenter.default().post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
+        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
         // One call for testing if we've previously registered.
         XCTAssertEqual(userNotificationsCapableDelegate.requestedUserNotificationSettingsCallCount, 2)
         
@@ -52,7 +52,7 @@ class SuperDelegateUserNotificationTests: SuperDelegateTests {
         // One call for registering, one call for noting that we registered.
         XCTAssertEqual(userNotificationsCapableDelegate.requestedUserNotificationSettingsCallCount, 3)
         
-        NotificationCenter.default().post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
+        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
         // One call for testing if we've previously registered, one call for registering, one call for setting that we have registered.
         XCTAssertEqual(userNotificationsCapableDelegate.requestedUserNotificationSettingsCallCount, 6)
         
@@ -69,7 +69,7 @@ class SuperDelegateUserNotificationTests: SuperDelegateTests {
         // One call for registering, one call for noting that we registered.
         XCTAssertEqual(userNotificationsCapableDelegate.requestedUserNotificationSettingsCallCount, 3)
         
-        NotificationCenter.default().post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
+        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
         // One call for testing if we've previously registered, one call for registering, one call for setting that we have registered.
         XCTAssertEqual(userNotificationsCapableDelegate.requestedUserNotificationSettingsCallCount, 6)
         
@@ -80,7 +80,7 @@ class SuperDelegateUserNotificationTests: SuperDelegateTests {
         XCTAssertTrue(userNotificationsCapableDelegateWithDifferentUserNotificationPreferences.application(UIApplication.shared(), willFinishLaunchingWithOptions: nil))
         XCTAssertEqual(userNotificationsCapableDelegateWithDifferentUserNotificationPreferences.requestedUserNotificationSettingsCallCount, 1)
         
-        NotificationCenter.default().post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
+        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
         // One call for testing if we've previously registered, but none for registering.
         XCTAssertEqual(userNotificationsCapableDelegateWithDifferentUserNotificationPreferences.requestedUserNotificationSettingsCallCount, 1)
         

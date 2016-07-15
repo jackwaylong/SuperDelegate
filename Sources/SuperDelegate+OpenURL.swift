@@ -28,12 +28,10 @@ import Foundation
 public protocol OpenURLCapable: ApplicationLaunched {
     /// Called when your application has been launched due to a URL.
     /// @return Whether the URL can be handled from a cold start.
-    @warn_unused_result
     func canOpen(launchURL: URLToOpen) -> Bool
     
     /// Called when your application has been asked to open a URL. Will not be called for URLs that were delivered to the app via loadInterface(launchItem:).
     /// @return Whether the URL was handled.
-    @warn_unused_result
     func handle(urlToOpen: URLToOpen) -> Bool
 }
 
@@ -69,7 +67,6 @@ public struct URLToOpen: CustomStringConvertible, Equatable {
 // MARK: Equatable
 
 
-@warn_unused_result
 public func ==(lhs: URLToOpen, rhs: URLToOpen) -> Bool {
     return lhs.url == rhs.url
         && lhs.sourceApplicationBundleID == rhs.sourceApplicationBundleID
@@ -89,7 +86,6 @@ extension SuperDelegate {
     
     @objc(application:openURL:options:)
     @available(iOS 9.0, *)
-    @warn_unused_result
     final public func application(_ app: UIApplication, open url: URL, options: [String : AnyObject] = [:]) -> Bool {
         guard let openURLCapableSelf = self as? OpenURLCapable else {
             noteImproperAPIUsage(text: "Received openURL action but \(self) does not conform to OpenURLCapable. Ignoring.")
@@ -110,7 +106,6 @@ extension SuperDelegate {
     }
     
     @objc(application:openURL:sourceApplication:annotation:)
-    @warn_unused_result
     final public func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: AnyObject) -> Bool {
         guard let openURLCapableSelf = self as? OpenURLCapable else {
             noteImproperAPIUsage(text: "Received openURL action but \(self) does not conform to OpenURLCapable. Ignoring.")
@@ -128,7 +123,6 @@ extension SuperDelegate {
     }
     
     @objc(application:handleOpenURL:)
-    @warn_unused_result
     final public func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
         // Nothing to do here. On iOS 8, application(_:open:sourceApplication:annotation:) will be called instead of this one. This method is declared to prevent subclasses from improperly adopting this API.
         return false

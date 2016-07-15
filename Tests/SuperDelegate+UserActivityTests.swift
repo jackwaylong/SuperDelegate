@@ -154,7 +154,7 @@ class SuperDelegateUserActivityTests: SuperDelegateTests {
         
         XCTAssertNil(userActivityCapableDelegate.continuedUserActivity)
         
-        NotificationCenter.default().post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
+        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
         
         XCTAssertTrue(userActivityCapableDelegate.application(UIApplication.shared(), continue: userActivity, restorationHandler: { (_) in
             // Nothing to do here

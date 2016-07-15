@@ -27,7 +27,6 @@ import Foundation
 @available(iOS 9.0, *)
 public protocol ShortcutCapable: ApplicationLaunched {
     /// Called whenever iOS informs SuperDelgate of a UIApplicationShortItem to process. Guaranteed to be called after setupApplication().
-    @warn_unused_result
     func canHandle(shortcutItem: UIApplicationShortcutItem) -> Bool
     
     /// Called when your app receives a shortcut item. Will not be called for shortcuts that were delivered to the app via loadInterface(launchItem:). Guaranteed not to be called with a shortcut item your app can not handle. Execute completionHandler when your application has handled the shortcut.

@@ -234,7 +234,7 @@ class SuperDelegateOpenURLTests: SuperDelegateTests {
         XCTAssertNotNil(openURLCapableDelegate.handledURLToOpen)
         openURLCapableDelegate.handledURLToOpen = nil
         
-        NotificationCenter.default().post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
+        NotificationCenter.default.post(name: NSNotification.Name.UIApplicationWillEnterForeground, object: UIApplication.shared())
         
         if #available(iOS 9.0, *) {
             XCTAssertTrue(openURLCapableDelegate.application(UIApplication.shared(), open: url, options: [:]))

@@ -26,7 +26,6 @@ import Foundation
 
 public protocol UserNotificationCapable: ApplicationLaunched {
     /// Called when your app registers for user notifications.
-    @warn_unused_result
     func requestedUserNotificationSettings() -> UIUserNotificationSettings
     
     /// Called every time user notifications are registered. Will happen every time the application is brought to the foreground after requestUserNotificationPermissions is called.
@@ -60,7 +59,6 @@ public enum UserNotificationPermissionsGranted: Equatable {
 // MARK: Equatable
 
 
-@warn_unused_result
 public func ==(lhs: UserNotificationPermissionsGranted, rhs: UserNotificationPermissionsGranted) -> Bool {
     switch (lhs, rhs) {
     case (.requested, .requested):
@@ -121,7 +119,7 @@ extension SuperDelegate {
                 return false
             }
             
-            return UserDefaults.standard().bool(forKey: "\(SuperDelegate.PreviouslyRequestedUserNotificationPermissionsPreferencesKey).\(userNotificationsCapableSelf.requestedUserNotificationSettings().types)")
+            return UserDefaults.standard.bool(forKey: "\(SuperDelegate.PreviouslyRequestedUserNotificationPermissionsPreferencesKey).\(userNotificationsCapableSelf.requestedUserNotificationSettings().types)")
         }
         
         set {
@@ -130,7 +128,7 @@ extension SuperDelegate {
                 return
             }
             
-            UserDefaults.standard().set(newValue, forKey: "\(SuperDelegate.PreviouslyRequestedUserNotificationPermissionsPreferencesKey).\(userNotificationsCapableSelf.requestedUserNotificationSettings().types)")
+            UserDefaults.standard.set(newValue, forKey: "\(SuperDelegate.PreviouslyRequestedUserNotificationPermissionsPreferencesKey).\(userNotificationsCapableSelf.requestedUserNotificationSettings().types)")
         }
     }
     

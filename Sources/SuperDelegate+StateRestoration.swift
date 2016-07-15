@@ -26,11 +26,9 @@ import Foundation
 
 public protocol StateRestorationCapable: ApplicationLaunched {
     /// Called when your app can save its application state for restoration. Returns whether the app should save the current state.
-    @warn_unused_result
     func shouldSaveApplicationState(coder: NSCoder) -> Bool
     
     /// Called when your app can restore its application state after its interface has been loaded. Returns whether the app should restore.
-    @warn_unused_result
     func shouldRestoreApplicationState(coder: NSCoder) -> Bool
     
     /// Tells your delegate to save any high-level state information at the beginning of the state preservation process.
@@ -40,7 +38,6 @@ public protocol StateRestorationCapable: ApplicationLaunched {
     func didDecodeRestorableState(coder: NSCoder)
     
     /// Asks your app to provide the specified view controller during state restoration.
-    @warn_unused_result
     func viewControllerWithRestorationIdentifierPath(identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController?
 }
 
@@ -54,7 +51,6 @@ extension SuperDelegate {
     // MARK: UIApplicationDelegate
     
     
-    @warn_unused_result
     final public func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
         guard let stateRestorationCapableSelf = self as? StateRestorationCapable else {
             // Nothing to do here.
@@ -64,7 +60,6 @@ extension SuperDelegate {
         return stateRestorationCapableSelf.shouldSaveApplicationState(coder: coder)
     }
     
-    @warn_unused_result
     final public func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
         guard let stateRestorationCapableSelf = self as? StateRestorationCapable else {
             // Nothing to do here.
@@ -95,7 +90,6 @@ extension SuperDelegate {
         
     }
     
-    @warn_unused_result
     final public func application(_ application: UIApplication, viewControllerWithRestorationIdentifierPath identifierComponents: [AnyObject], coder: NSCoder) -> UIViewController? {
         guard let stateRestorationCapableSelf = self as? StateRestorationCapable else {
             noteImproperAPIUsage(text: "Received viewControllerWithRestorationIdentifierPath but \(self) does not conform to StateRestorationCapable. Not handling state restoration event.")
