@@ -174,7 +174,7 @@ public class SuperDelegate: NSObject, UIApplicationDelegate {
             backgroundBluetoothCentralCapableSelf.restoreBluetoothCentralManagers(identifiersToRestore: launchBluetoothCentralIdentifiers)
         }
         
-        if let launchDueToLocationEvent = launchOptions?[UIApplicationLaunchOptionsLocationKey] as? Bool where launchDueToLocationEvent {
+        if let launchDueToLocationEvent = launchOptions?[UIApplicationLaunchOptionsLocationKey] as? Bool, launchDueToLocationEvent {
             guard let locationEventCapableSelf = self as? LocationEventCapable else {
                 noteImproperAPIUsage(text: "Launched due to location event but \(self) does not conform to LocationEventCapable. Failing to launch app.")
                 return false

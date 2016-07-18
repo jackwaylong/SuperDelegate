@@ -128,19 +128,19 @@ public struct RemoteNotification: CustomStringConvertible, Equatable {
 
 public func ==(lhs: RemoteNotification, rhs: RemoteNotification) -> Bool {
     if lhs.alert != nil || rhs.alert != nil {
-        guard let lhsAlert = lhs.alert, let rhsAlert = rhs.alert where lhsAlert == rhsAlert else {
+        guard let lhsAlert = lhs.alert, let rhsAlert = rhs.alert, lhsAlert == rhsAlert else {
             return false
         }
     }
     
     if lhs.badge != nil || rhs.badge != nil {
-        guard let lhsBadge = lhs.badge, let rhsBadge = rhs.badge where lhsBadge == rhsBadge else {
+        guard let lhsBadge = lhs.badge, let rhsBadge = rhs.badge, lhsBadge == rhsBadge else {
             return false
         }
     }
     
     if lhs.sound != nil || rhs.sound != nil {
-        guard let lhsSound = lhs.sound, let rhsSound = rhs.sound where lhsSound == rhsSound else {
+        guard let lhsSound = lhs.sound, let rhsSound = rhs.sound, lhsSound == rhsSound else {
             return false
         }
     }
@@ -150,7 +150,7 @@ public func ==(lhs: RemoteNotification, rhs: RemoteNotification) -> Bool {
     }
     
     if lhs.categoryIdentifier != nil || rhs.categoryIdentifier != nil {
-        guard let lhsCategoryIdentifier = lhs.categoryIdentifier, let rhsCategoryIdentifier = rhs.categoryIdentifier where lhsCategoryIdentifier == rhsCategoryIdentifier else {
+        guard let lhsCategoryIdentifier = lhs.categoryIdentifier, let rhsCategoryIdentifier = rhs.categoryIdentifier, lhsCategoryIdentifier == rhsCategoryIdentifier else {
             return false
         }
     }
@@ -164,49 +164,49 @@ public func ==(lhs: RemoteNotification, rhs: RemoteNotification) -> Bool {
 
 public func ==(lhs: RemoteNotification.Alert, rhs: RemoteNotification.Alert) -> Bool {
     if lhs.body != nil || rhs.body != nil {
-        guard let lhsBody = lhs.body, let rhsBody = rhs.body where lhsBody == rhsBody else {
+        guard let lhsBody = lhs.body, let rhsBody = rhs.body, lhsBody == rhsBody else {
             return false
         }
     }
     
     if lhs.bodyLocalizationKey != nil || rhs.bodyLocalizationKey != nil {
-        guard let lhsBodyLocalizationKey = lhs.bodyLocalizationKey, let rhsBodyLocalizationKey = rhs.bodyLocalizationKey where lhsBodyLocalizationKey == rhsBodyLocalizationKey else {
+        guard let lhsBodyLocalizationKey = lhs.bodyLocalizationKey, let rhsBodyLocalizationKey = rhs.bodyLocalizationKey, lhsBodyLocalizationKey == rhsBodyLocalizationKey else {
             return false
         }
     }
     
     if lhs.bodyLocalizationArguments != nil || rhs.bodyLocalizationArguments != nil {
-        guard let lhsBodyLocalizationArguments = lhs.bodyLocalizationArguments, let rhsBodyLocalizationArguments = rhs.bodyLocalizationArguments where lhsBodyLocalizationArguments == rhsBodyLocalizationArguments else {
+        guard let lhsBodyLocalizationArguments = lhs.bodyLocalizationArguments, let rhsBodyLocalizationArguments = rhs.bodyLocalizationArguments, lhsBodyLocalizationArguments == rhsBodyLocalizationArguments else {
             return false
         }
     }
     
     if lhs.actionLocalizationKey != nil || rhs.actionLocalizationKey != nil {
-        guard let lhsActionLocalizationKey = lhs.actionLocalizationKey, let rhsActionLocalizationKey = rhs.actionLocalizationKey where lhsActionLocalizationKey == rhsActionLocalizationKey else {
+        guard let lhsActionLocalizationKey = lhs.actionLocalizationKey, let rhsActionLocalizationKey = rhs.actionLocalizationKey, lhsActionLocalizationKey == rhsActionLocalizationKey else {
             return false
         }
     }
     
     if lhs.launchImageName != nil || rhs.launchImageName != nil {
-        guard let lhsLaunchImageName = lhs.launchImageName, let rhsLaunchImageName = rhs.launchImageName where lhsLaunchImageName == rhsLaunchImageName else {
+        guard let lhsLaunchImageName = lhs.launchImageName, let rhsLaunchImageName = rhs.launchImageName, lhsLaunchImageName == rhsLaunchImageName else {
             return false
         }
     }
     
     if lhs.wearableTitle != nil || rhs.wearableTitle != nil {
-        guard let lhsWearableTitle = lhs.wearableTitle, let rhsWearableTitle = rhs.wearableTitle where lhsWearableTitle == rhsWearableTitle else {
+        guard let lhsWearableTitle = lhs.wearableTitle, let rhsWearableTitle = rhs.wearableTitle, lhsWearableTitle == rhsWearableTitle else {
             return false
         }
     }
     
     if lhs.wearableTitleLocalizationKey != nil || rhs.wearableTitleLocalizationKey != nil {
-        guard let lhsWearableTitleLocalizationKey = lhs.wearableTitleLocalizationKey, let rhsWearableTitleLocalizationKey = rhs.wearableTitleLocalizationKey where lhsWearableTitleLocalizationKey == rhsWearableTitleLocalizationKey else {
+        guard let lhsWearableTitleLocalizationKey = lhs.wearableTitleLocalizationKey, let rhsWearableTitleLocalizationKey = rhs.wearableTitleLocalizationKey, lhsWearableTitleLocalizationKey == rhsWearableTitleLocalizationKey else {
             return false
         }
     }
     
     if lhs.wearableTitleLocalizationArguments != nil || rhs.wearableTitleLocalizationArguments != nil {
-        guard let lhsWearableTitleLocalizationArguments = lhs.wearableTitleLocalizationArguments, let rhsWearableTitleLocalizationArguments = rhs.wearableTitleLocalizationArguments where lhsWearableTitleLocalizationArguments == rhsWearableTitleLocalizationArguments else {
+        guard let lhsWearableTitleLocalizationArguments = lhs.wearableTitleLocalizationArguments, let rhsWearableTitleLocalizationArguments = rhs.wearableTitleLocalizationArguments, lhsWearableTitleLocalizationArguments == rhsWearableTitleLocalizationArguments else {
             return false
         }
     }
